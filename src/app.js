@@ -279,7 +279,15 @@ const clearSignatures = () => sigPads.forEach((p) => p.reset());
 
 let templateBytes = null;
 let lastUrl = null;
+let lastFile = null;
 let lastValues = null;
+
+// An app opened from the iPad/iPhone Home Screen can't download files: a
+// download link replaces the app with the PDF. There, Download PDF opens the
+// share sheet instead, whose "Save to Files" saves it. Safari tabs and
+// desktops get a normal download.
+const installedApp = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+const canShareFile = (file) => !!(navigator.canShare && navigator.canShare({ files: [file] }));
 
 // The PDF is rebuilt shortly after every change, so Download / Open
 // always hand out the current report. Builds never overlap; changes made
@@ -308,8 +316,9 @@ async function buildPdf() {
     const who = values["Employee Name"].replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
     const name = `shift-report-${date}${who ? "-" + who : ""}.pdf`;
     lastValues = values;
+    lastFile = new File([bytes], name, { type: "application/pdf" });
     if (lastUrl) URL.revokeObjectURL(lastUrl);
-    lastUrl = URL.createObjectURL(new File([bytes], name, { type: "application/pdf" }));
+    lastUrl = URL.createObjectURL(lastFile);
 
     const dl = $("#download-main");
     dl.href = lastUrl;
@@ -333,6 +342,20 @@ function pdfUsed() {
   if (lastValues && lastValues["Employee Name"]) store.set(STORE.employee, lastValues["Employee Name"]);
 }
 
+async function downloadPdf(e) {
+  if (!lastFile || !installedApp() || !canShareFile(lastFile)) {
+    pdfUsed(); // a normal download
+    return;
+  }
+  e.preventDefault();
+  try {
+    await navigator.share({ files: [lastFile] });
+    pdfUsed();
+  } catch (err) {
+    if (err.name !== "AbortError") $("#pdf-status").textContent = `Couldn't save the PDF: ${err.message}`;
+  }
+}
+
 // ---- Offline support -----------------------------------------------------
 
 async function setUpOffline() {
@@ -344,8 +367,7 @@ async function setUpOffline() {
     const check = async () => !!(await caches.match(BUNDLE_URL));
     for (let i = 0; i < 30 && !(await check()); i++) await new Promise((r) => setTimeout(r, 1000));
     if (await check()) {
-      const installed = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-      el.textContent = installed
+      el.textContent = installedApp()
         ? "✓ Available offline."
         : "✓ Available offline. Add to Home Screen to open it without a connection.";
     }
@@ -368,7 +390,7 @@ function wire() {
   form.addEventListener("input", changed);
   form.addEventListener("change", changed);
   form.addEventListener("submit", (e) => e.preventDefault());
-  $("#download-main").addEventListener("click", pdfUsed);
+  $("#download-main").addEventListener("click", downloadPdf);
   $("#open-link").addEventListener("click", pdfUsed);
   $("#new-btn").addEventListener("click", () => {
     if (confirm("Clear this report and start a new one?")) newReport();

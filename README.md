@@ -47,8 +47,11 @@ install it once while connected.
   Home screen).
 
 Open it once from the home screen while still connected. When the bottom of
-the page says "✓ Available offline", it will work with no signal. On every
-device, **Download PDF** saves the report as a file.
+the page says "✓ Available offline", it will work with no signal.
+
+**Saving the PDF:** in Safari and on desktops, **Download PDF** downloads the
+file. In the app opened from the Home Screen, iOS doesn't allow downloads, so
+**Download PDF** opens the share sheet: tap **Save to Files**.
 
 **Updating:** deploy the new files. Each device picks up the change the next
 time it opens the app with a connection (the change shows on the following
