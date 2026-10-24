@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shift Report Generator</title>
+  <meta name="theme-color" content="#1f2a36">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Shift Reports">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="src/style.css">
+  <script>
+    // Apply a saved light/dark choice before the page paints.
+    try { const t = localStorage.getItem("sr.theme"); if (t) document.documentElement.dataset.theme = t; } catch {}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <img src="assets/images/logo-circle.png" alt="" class="topbar-logo">
+    <div class="topbar-title">
+      <h1>Shift Report</h1>
+      <p>Lake Merwin Campers Hideaway</p>
+    </div>
+    <button type="button" id="theme-btn" class="theme-btn"></button>
+    <button type="button" id="lock-btn" class="lock-btn" hidden>Lock</button>
+  </header>
+
+  <section id="lock" class="lock" hidden>
+    <form id="lock-form" class="card lock-card">
+      <h2>Enter access code</h2>
+      <label class="field">
+        <span>Access code</span>
+        <input id="lock-code" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" required>
+      </label>
+      <label class="remember"><input type="checkbox" id="lock-remember" checked> Remember on this device</label>
+      <button type="submit" id="lock-submit">Unlock</button>
+      <p id="lock-error" class="hint warn" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <form id="report" autocomplete="off" hidden>
+    <section class="card">
+      <h2>Shift</h2>
+      <div class="grid g2">
+        <label class="field"><span>Employee name</span><input name="Employee Name" autocomplete="name"></label>
+        <label class="field"><span>Date</span><input type="date" name="Date"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Vehicle checklist</h2>
+      <fieldset class="checks">
+        <legend class="sr-only">Vehicle checklist</legend>
+        <label><input type="checkbox" name="AED"> AED</label>
+        <label><input type="checkbox" name="First Aid Kit"> First aid kit</label>
+        <label><input type="checkbox" name="Lockout Kit"> Lockout kit</label>
+        <label><input type="checkbox" name="Fire Ext"> Fire extinguisher</label>
+      </fieldset>
+      <label class="field narrow"><span>Fuel level, start of shift</span>
+        <select name="Fuel Start">
+          <option value=""></option>
+          <option>Full</option><option>3/4</option><option>1/2</option><option>1/4</option><option>Empty</option>
+        </select>
+      </label>
+      <label class="field"><span>Defective or missing items in vehicle</span><input name="Vehicle Defects"></label>
+    </section>
+
+    <section class="card">
+      <h2>Patrol area 1 <small>Upper 4, 8, 7, 5, 9</small></h2>
+      <h3>LMCH facility <small>— time check, rounds 1 &amp; 2</small></h3>
+      <div class="rounds">
+        <div class="round">
+          <span class="round-name">Front Gate</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A1 Front Gate 1" aria-label="Front Gate round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A1 Front Gate 2" aria-label="Front Gate round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">KK5</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A1 KK5 1" aria-label="KK5 round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A1 KK5 2" aria-label="KK5 round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">Office</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A1 Office 1" aria-label="Office round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A1 Office 2" aria-label="Office round 2"></label>
+        </div>
+      </div>
+      <h3>Bathhouse check</h3>
+      <div class="grid g2">
+        <label class="field"><span>BH #</span><input name="A1 BH Number" inputmode="numeric"></label>
+        <label class="field"><span>Time</span><input type="time" name="A1 BH Time"></label>
+      </div>
+      <div class="grid g2">
+        <fieldset class="checks">
+          <legend>Clean</legend>
+          <label><input type="radio" name="A1 Clean" value="Yes"> Yes</label>
+          <label><input type="radio" name="A1 Clean" value="No"> No</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Maintenance issue</legend>
+          <label><input type="radio" name="A1 Maintenance Issue" value="Yes"> Yes</label>
+          <label><input type="radio" name="A1 Maintenance Issue" value="No"> No</label>
+        </fieldset>
+      </div>
+      <label class="field"><span>Area comments</span><textarea name="A1 Comments" rows="2"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>Patrol area 2 <small>3, 1, 2, Upper 6, Upper 20, 21</small></h2>
+      <h3>LMCH facility <small>— time check, rounds 1 &amp; 2</small></h3>
+      <div class="rounds">
+        <div class="round">
+          <span class="round-name">Maintenance</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A2 Maintenance 1" aria-label="Maintenance round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A2 Maintenance 2" aria-label="Maintenance round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">KK2</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A2 KK2 1" aria-label="KK2 round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A2 KK2 2" aria-label="KK2 round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">Pool</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A2 Pool 1" aria-label="Pool round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A2 Pool 2" aria-label="Pool round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">Laundry</span>
+          <label class="field"><span>Pool</span><input type="time" name="A2 Laundry Pool" aria-label="Laundry pool"></label>
+          <label class="field"><span>Block 21</span><input type="time" name="A2 Laundry Block 21" aria-label="Laundry block 21"></label>
+        </div>
+      </div>
+      <h3>Bathhouse check</h3>
+      <div class="grid g2">
+        <label class="field"><span>BH #</span><input name="A2 BH Number" inputmode="numeric"></label>
+        <label class="field"><span>Time</span><input type="time" name="A2 BH Time"></label>
+      </div>
+      <div class="grid g2">
+        <fieldset class="checks">
+          <legend>Clean</legend>
+          <label><input type="radio" name="A2 Clean" value="Yes"> Yes</label>
+          <label><input type="radio" name="A2 Clean" value="No"> No</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Maintenance issue</legend>
+          <label><input type="radio" name="A2 Maintenance Issue" value="Yes"> Yes</label>
+          <label><input type="radio" name="A2 Maintenance Issue" value="No"> No</label>
+        </fieldset>
+      </div>
+      <label class="field"><span>Area comments</span><textarea name="A2 Comments" rows="2"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>Patrol area 3 <small>Lower 20, Lower 6, 19, 11, 10</small></h2>
+      <h3>LMCH facility <small>— time check, rounds 1 &amp; 2</small></h3>
+      <div class="rounds">
+        <div class="round">
+          <span class="round-name">KK10</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A3 KK10 1" aria-label="KK10 round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A3 KK10 2" aria-label="KK10 round 2"></label>
+        </div>
+        <div class="round">
+          <span class="round-name">Meditation Point</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A3 Meditation Point 1" aria-label="Meditation Point round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A3 Meditation Point 2" aria-label="Meditation Point round 2"></label>
+        </div>
+      </div>
+      <h3>Bathhouse check</h3>
+      <div class="grid g2">
+        <label class="field"><span>BH #</span><input name="A3 BH Number" inputmode="numeric"></label>
+        <label class="field"><span>Time</span><input type="time" name="A3 BH Time"></label>
+      </div>
+      <div class="grid g2">
+        <fieldset class="checks">
+          <legend>Clean</legend>
+          <label><input type="radio" name="A3 Clean" value="Yes"> Yes</label>
+          <label><input type="radio" name="A3 Clean" value="No"> No</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Maintenance issue</legend>
+          <label><input type="radio" name="A3 Maintenance Issue" value="Yes"> Yes</label>
+          <label><input type="radio" name="A3 Maintenance Issue" value="No"> No</label>
+        </fieldset>
+      </div>
+      <label class="field"><span>Area comments</span><textarea name="A3 Comments" rows="2"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>Patrol area 4 <small>14, 12, 13, 17, 16, 18</small></h2>
+      <h3>LMCH facility <small>— time check, rounds 1 &amp; 2</small></h3>
+      <div class="rounds">
+        <div class="round">
+          <span class="round-name">Waterfront</span>
+          <label class="field"><span>Round 1</span><input type="time" name="A4 Waterfront 1" aria-label="Waterfront round 1"></label>
+          <label class="field"><span>Round 2</span><input type="time" name="A4 Waterfront 2" aria-label="Waterfront round 2"></label>
+        </div>
+      </div>
+      <h3>Bathhouse check</h3>
+      <div class="grid g2">
+        <label class="field"><span>BH #</span><input name="A4 BH Number" inputmode="numeric"></label>
+        <label class="field"><span>Time</span><input type="time" name="A4 BH Time"></label>
+      </div>
+      <div class="grid g2">
+        <fieldset class="checks">
+          <legend>Clean</legend>
+          <label><input type="radio" name="A4 Clean" value="Yes"> Yes</label>
+          <label><input type="radio" name="A4 Clean" value="No"> No</label>
+        </fieldset>
+        <fieldset class="checks">
+          <legend>Maintenance issue</legend>
+          <label><input type="radio" name="A4 Maintenance Issue" value="Yes"> Yes</label>
+          <label><input type="radio" name="A4 Maintenance Issue" value="No"> No</label>
+        </fieldset>
+      </div>
+      <label class="field"><span>Area comments</span><textarea name="A4 Comments" rows="2"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>Security journal</h2>
+      <label class="field">
+        <span>Situations and notes regarding security operations</span>
+        <textarea name="Journal" rows="10"></textarea>
+      </label>
+      <p class="hint" id="journal-hint"></p>
+    </section>
+
+    <section class="card">
+      <h2>End of shift</h2>
+      <fieldset class="checks">
+        <legend>Turn in</legend>
+        <label><input type="checkbox" name="Radio"> Radio</label>
+        <label><input type="checkbox" name="Phone"> Phone</label>
+        <label><input type="checkbox" name="Keys"> Keys</label>
+      </fieldset>
+      <div class="grid g2">
+        <div>
+          <fieldset class="checks"><legend class="sr-only">Incident reports</legend>
+            <label><input type="checkbox" name="Incident Reports"> Incident reports</label>
+          </fieldset>
+          <label class="field"><span>Total incident reports</span><input name="Incident Reports Total" inputmode="numeric" data-checks="Incident Reports"></label>
+        </div>
+        <div>
+          <fieldset class="checks"><legend class="sr-only">Citations</legend>
+            <label><input type="checkbox" name="Citations"> Citations</label>
+          </fieldset>
+          <label class="field"><span>Total citations</span><input name="Citations Total" inputmode="numeric" data-checks="Citations"></label>
+        </div>
+      </div>
+      <fieldset class="checks"><legend class="sr-only">Other</legend>
+        <label><input type="checkbox" name="Other"> Other</label>
+      </fieldset>
+      <label class="field"><span>Other (describe)</span><input name="Other Text" data-checks="Other"></label>
+      <fieldset class="checks"><legend class="sr-only">Vehicle</legend>
+        <label><input type="checkbox" name="Vehicle Clean"> Vehicle is clean at end of shift</label>
+      </fieldset>
+      <label class="field narrow"><span>Fuel level, end of shift</span>
+        <select name="Fuel End">
+          <option value=""></option>
+          <option>Full</option><option>3/4</option><option>1/2</option><option>1/4</option><option>Empty</option>
+        </select>
+      </label>
+
+      <div class="field sig" data-input="Employee Signature Drawing">
+        <span id="sig-label">Employee signature <small>— sign with a finger or stylus, or leave blank to sign the printed copy</small></span>
+        <canvas class="sig-pad" role="img" aria-labelledby="sig-label"></canvas>
+        <input type="hidden" name="Employee Signature Drawing">
+        <button type="button" class="link-btn sig-clear">Clear signature</button>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="button" id="new-btn" class="secondary">New report</button>
+      <a id="download-main" class="button pdf-action" hidden>Download PDF</a>
+    </div>
+    <p id="pdf-status" class="hint center" aria-live="polite"></p>
+    <div id="pdf-result" class="pdf-result" hidden>
+      <a id="open-link" class="button secondary pdf-action" target="_blank" rel="noopener">Open</a>
+    </div>
+    <p id="offline-status" class="hint center"></p>
+  </form>
+
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script src="src/vault.js"></script>
+  <script src="src/fill.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
