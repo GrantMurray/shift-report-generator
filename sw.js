@@ -6,7 +6,7 @@
 // background, so a device picks up new versions the next time it opens the
 // app with a connection.
 // Bump VERSION to force every device to re-download everything.
-const VERSION = "v4";
+const VERSION = "v7";
 const CACHE = `shift-reports-${VERSION}`;
 
 const SHELL = [

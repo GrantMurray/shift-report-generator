@@ -81,7 +81,7 @@ body {
 .remember { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
 .remember input { width: 20px; height: 20px; accent-color: var(--accent); }
 
-form { max-width: 920px; margin: 0 auto; padding: 16px 16px 40px; }
+form { max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px; }
 
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
@@ -99,40 +99,102 @@ input:not([type=checkbox]):not([type=radio]), textarea, select {
 input:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 textarea { resize: vertical; }
 select { appearance: auto; min-height: 42px; }
-.field.narrow { max-width: 240px; }
 
-.card h3 { margin: 14px 0 8px; font-size: 0.95rem; }
-.card h3 small { font-weight: 400; color: var(--muted); }
-
-/* ---- Patrol rounds ------------------------------------------------ */
-.rounds { display: grid; gap: 0; }
-.round { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; align-items: end; }
-.round-name { font-weight: 600; padding-bottom: 20px; }
-@media (max-width: 560px) {
-  .round { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .round-name { grid-column: 1 / -1; padding: 4px 0 2px; }
+/* ---- Paper-form layout -------------------------------------------- */
+/* The report is laid out like the printed form: two pages, inline labels,
+   answers written on underlined blanks and ruled lines. */
+.sheet {
+  --rule: var(--line);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 28px 32px 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
 }
-.field > .time-wrap { display: flex; gap: 6px; margin: 0; font-size: inherit; color: inherit; }
+@media (max-width: 600px) { .sheet { padding: 18px 16px; } }
+
+.doc-head { margin-bottom: 18px; }
+.doc-title {
+  margin: 0 0 6px; font-size: 1.4rem; font-weight: 700; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.doc-subtitle { margin: 0; font-size: 1.2rem; text-transform: uppercase; }
+.sec { margin: 26px 0 10px; font-size: 1.25rem; }
+.sec.first { margin-top: 0; }
+
+/* A row of inline label + blank pairs that wraps on narrow screens. */
+.line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 46px; }
+.sep { color: var(--muted); }
+.blank, .t { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.blank.grow { flex: 1 1 260px; min-width: 0; }
+.stack { display: block; margin: 8px 0 4px; }
+
+/* Blanks: just an underline, like the paper form. */
+.sheet input:not([type=checkbox]):not([type=radio]), .sheet select {
+  width: auto; height: 40px; padding: 4px 6px; border: 0; border-bottom: 1.5px solid var(--muted);
+  border-radius: 0; background: transparent; color: var(--accent);
+}
+.sheet .stack > input:not([type=checkbox]) { display: block; width: 100%; margin-top: 2px; }
+.sheet .blank.grow input { flex: 1; min-width: 0; }
+.sheet .blank.short input { width: 5.5rem; }
+.sheet input:focus, .sheet select:focus, .sheet textarea:focus { outline: none; border-bottom-color: var(--accent); }
+.sheet input:focus-visible, .sheet select:focus-visible { box-shadow: 0 2px 0 var(--accent); }
+.sheet select { min-width: 6.5rem; }
+
+/* Comments and journal are written on ruled lines. */
+.sheet textarea.ruled {
+  --lh: 34px;
+  display: block; width: 100%; height: calc(var(--lines) * var(--lh) + 2px);
+  padding: 0 6px; border: 0; border-radius: 0; resize: none; line-height: var(--lh);
+  color: var(--accent); background: transparent
+    linear-gradient(transparent calc(var(--lh) - 1px), var(--rule) calc(var(--lh) - 1px), var(--rule) var(--lh), transparent var(--lh))
+    0 0 / 100% var(--lh) local;
+}
+.sheet textarea.ruled:focus { box-shadow: inset 3px 0 0 var(--accent); }
+
+.box { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.box input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+
+/* ---- Security rounds: two columns, as on the paper form ----------- */
+.zones { display: grid; gap: 22px 36px; }
+@media (min-width: 700px) { .zones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.area { container-type: inline-size; }
+.area h3 { margin: 0 0 4px; font-size: 1.02rem; }
+.area .sites { font-weight: 700; }
+.area h4 { margin: 14px 0 0; font-size: 1rem; }
+.facility { margin: 6px 0 4px; }
+
+/* Check point name, then "1: [time] 2: [time]"; the name moves onto the
+   same line when the column is wide enough (landscape iPad, desktop). */
+.round { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; align-items: center; padding: 2px 0; }
+.round-name { grid-column: 1 / -1; padding-top: 6px; }
+@container (min-width: 470px) {
+  .round { grid-template-columns: 8.6rem minmax(0, 1fr) minmax(0, 1fr); }
+  .round-name { grid-column: auto; padding-top: 0; }
+}
+/* The time drops under a long label ("Block 21:") when the column is narrow. */
+.t { min-width: 0; flex-wrap: wrap; white-space: normal; }
+.t > span:first-child { color: var(--muted); }
+.t.above > span:first-child { flex-basis: 100%; }
+.t > .time-wrap { display: flex; gap: 4px; flex: 1 1 7rem; min-width: 0; align-items: center; }
 .time-wrap input { flex: 1; min-width: 0; }
+.sheet input[type=time] { width: 100%; padding-inline: 2px; }
+/* Chrome's clock icon crowds the time; the Now button and typing cover it. */
+.sheet input[type=time]::-webkit-calendar-picker-indicator { display: none; }
+.now-btn {
+  font: inherit; font-size: 0.78rem; height: 32px; padding: 0 7px; border-radius: 16px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--field); color: var(--accent);
+}
+
+/* ---- End of shift -------------------------------------------------- */
+.indent { padding-left: 2rem; }
+@media (max-width: 600px) { .indent { padding-left: 0.75rem; } }
+.indent > .box { display: flex; }
+.turn-in { margin: 4px 0 0; }
+.sig { margin-top: 22px; }
+.sig > span { display: block; margin-bottom: 6px; }
+.sig small { color: var(--muted); }
 .now-btn {
   font: inherit; font-size: 0.85rem; padding: 0 10px; border-radius: 8px; cursor: pointer;
   border: 1px solid var(--line); background: var(--field); color: var(--accent);
 }
-
-.grid { display: grid; gap: 0 12px; }
-.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 560px) {
-  .g2, .g3 { grid-template-columns: 1fr; }
-  .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-.checks { border: 0; padding: 0; margin: 0 0 10px; display: flex; flex-wrap: wrap; gap: 4px 16px; }
-.checks legend { font-size: 0.85rem; color: var(--muted); padding: 0; margin-bottom: 4px; }
-.checks.cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
-.checks label { display: flex; align-items: center; gap: 8px; min-height: 36px; cursor: pointer; }
-.checks input { width: 20px; height: 20px; accent-color: var(--accent); }
 
 .hint { font-size: 0.85rem; color: var(--muted); margin: 0 0 10px; }
 .hint.ok { color: var(--ok); }
