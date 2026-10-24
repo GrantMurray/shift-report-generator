@@ -390,6 +390,11 @@ function wire() {
   form.addEventListener("input", changed);
   form.addEventListener("change", changed);
   form.addEventListener("submit", (e) => e.preventDefault());
+  // iOS puts focus back in the last field when the app wakes from sleep,
+  // popping up the keyboard. Let go of it whenever the app is hidden.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && form.contains(document.activeElement)) document.activeElement.blur();
+  });
   $("#download-main").addEventListener("click", downloadPdf);
   $("#open-link").addEventListener("click", pdfUsed);
   $("#new-btn").addEventListener("click", () => {
