@@ -140,7 +140,7 @@ select { appearance: auto; min-height: 42px; }
 
 /* Comments and journal are written on ruled lines. */
 .sheet textarea.ruled {
-  --lh: 34px;
+  --lh: 26px; /* iPad Safari draws the caret as tall as the line */
   display: block; width: 100%; height: calc(var(--lines) * var(--lh) + 2px);
   padding: 0 6px; border: 0; border-radius: 0; resize: none; line-height: var(--lh);
   color: var(--accent); background: transparent
