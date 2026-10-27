@@ -81,7 +81,7 @@ body {
 .remember { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
 .remember input { width: 20px; height: 20px; accent-color: var(--accent); }
 
-form { max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px; }
+form { max-width: 1100px; margin: 0 auto; padding: 16px 16px calc(40px + env(safe-area-inset-bottom)); }
 
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
@@ -202,9 +202,7 @@ select { appearance: auto; min-height: 42px; }
 .center { text-align: center; }
 
 /* ---- Actions ------------------------------------------------------ */
-.actions { display: flex; gap: 12px; justify-content: flex-end; position: sticky; bottom: 0;
-  padding: 12px 0; background: linear-gradient(transparent, var(--bg) 30%); }
-.actions { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+.actions { display: flex; gap: 12px; justify-content: flex-end; margin-bottom: 12px; }
 .pdf-result { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 10px; }
 .pdf-result[hidden], .pdf-result [hidden] { display: none; }
 .actions button, .pdf-result button, .button {

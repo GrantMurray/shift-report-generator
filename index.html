@@ -43,6 +43,9 @@
   </section>
 
   <form id="report" autocomplete="off" hidden>
+    <div class="actions">
+      <button type="button" id="new-btn" class="secondary">New report</button>
+    </div>
     <!-- Page 1, laid out like the paper form -->
     <section class="sheet">
       <header class="doc-head">
@@ -51,7 +54,7 @@
       </header>
 
       <div class="line">
-        <label class="blank grow"><b>Employee name:</b> <input name="Employee Name" autocomplete="name"></label>
+        <label class="blank grow"><b>Employee name:</b> <input name="Employee Name"></label>
         <label class="blank grow"><b>Date:</b> <input type="date" name="Date"></label>
       </div>
 
@@ -265,14 +268,11 @@
       </div>
     </section>
 
-    <div class="actions">
-      <button type="button" id="new-btn" class="secondary">New report</button>
-      <a id="download-main" class="button pdf-action" hidden>Download PDF</a>
-    </div>
-    <p id="pdf-status" class="hint center" aria-live="polite"></p>
     <div id="pdf-result" class="pdf-result" hidden>
+      <a id="download-main" class="button pdf-action" hidden>Download PDF</a>
       <a id="open-link" class="button secondary pdf-action" target="_blank" rel="noopener">Open</a>
     </div>
+    <p id="pdf-status" class="hint center" aria-live="polite"></p>
     <p id="offline-status" class="hint center"></p>
   </form>
 
