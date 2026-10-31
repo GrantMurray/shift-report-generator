@@ -161,20 +161,15 @@ select { appearance: auto; min-height: 42px; }
 .area h4 { margin: 14px 0 0; font-size: 1rem; }
 .facility { margin: 6px 0 4px; }
 
-/* Check point name, then "1: [time] 2: [time]"; the name moves onto the
-   same line when the column is wide enough (landscape iPad, desktop). */
-.round { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; align-items: center; padding: 2px 0; }
-.round-name { grid-column: 1 / -1; padding-top: 6px; }
-@container (min-width: 470px) {
-  .round { grid-template-columns: 8.6rem minmax(0, 1fr) minmax(0, 1fr); }
-  .round-name { grid-column: auto; padding-top: 0; }
+/* Check point name, then "1: [time] 2: [time]" right after it; the name gets
+   its own line when the column is too narrow for all three. */
+.round { display: flex; flex-wrap: wrap; align-items: center; gap: 0 14px; padding: 2px 0; }
+.round-name { flex-basis: 100%; padding-top: 6px; }
+@container (min-width: 420px) {
+  .round-name { flex-basis: auto; padding-top: 0; }
 }
-/* The time drops under a long label ("Block 21:") when the column is narrow. */
-.t { min-width: 0; flex-wrap: wrap; white-space: normal; }
 .t > span:first-child { color: var(--muted); }
-.t.above > span:first-child { flex-basis: 100%; }
-.t > input[type=time] { flex: 1 1 7rem; min-width: 0; }
-.sheet input[type=time] { width: 100%; padding-inline: 2px; }
+.sheet input[type=time] { width: 6.5rem; padding-inline: 2px; }
 /* Chrome's clock icon crowds the time; typing covers it. */
 .sheet input[type=time]::-webkit-calendar-picker-indicator { display: none; }
 
