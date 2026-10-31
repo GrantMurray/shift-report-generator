@@ -173,15 +173,10 @@ select { appearance: auto; min-height: 42px; }
 .t { min-width: 0; flex-wrap: wrap; white-space: normal; }
 .t > span:first-child { color: var(--muted); }
 .t.above > span:first-child { flex-basis: 100%; }
-.t > .time-wrap { display: flex; gap: 4px; flex: 1 1 7rem; min-width: 0; align-items: center; }
-.time-wrap input { flex: 1; min-width: 0; }
+.t > input[type=time] { flex: 1 1 7rem; min-width: 0; }
 .sheet input[type=time] { width: 100%; padding-inline: 2px; }
-/* Chrome's clock icon crowds the time; the Now button and typing cover it. */
+/* Chrome's clock icon crowds the time; typing covers it. */
 .sheet input[type=time]::-webkit-calendar-picker-indicator { display: none; }
-.now-btn {
-  font: inherit; font-size: 0.78rem; height: 32px; padding: 0 7px; border-radius: 16px; cursor: pointer;
-  border: 1px solid var(--line); background: var(--field); color: var(--accent);
-}
 
 /* ---- End of shift -------------------------------------------------- */
 .indent { padding-left: 2rem; }
@@ -191,11 +186,6 @@ select { appearance: auto; min-height: 42px; }
 .sig { margin-top: 22px; }
 .sig > span { display: block; margin-bottom: 6px; }
 .sig small { color: var(--muted); }
-.now-btn {
-  font: inherit; font-size: 0.85rem; padding: 0 10px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--line); background: var(--field); color: var(--accent);
-}
-
 .hint { font-size: 0.85rem; color: var(--muted); margin: 0 0 10px; }
 .hint.ok { color: var(--ok); }
 .hint.warn { color: var(--warn); }

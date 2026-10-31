@@ -24,11 +24,6 @@ function today() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-function now() {
-  const d = new Date();
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
 function applyDefaults() {
   field("Date").value = today();
   clearSignatures();
@@ -114,25 +109,6 @@ function updateJournalHint() {
     ? `About ${used} lines — will print in smaller text to fit the ${JOURNAL_LINES} lines.`
     : `About ${used} of ${JOURNAL_LINES} lines used at normal size.`;
   el.className = `hint ${used > JOURNAL_LINES ? "warn" : ""}`;
-}
-
-// Each time box gets a "Now" button that stamps the current time.
-function addNowButtons() {
-  for (const input of form.querySelectorAll("input[type=time]")) {
-    const wrap = document.createElement("span");
-    wrap.className = "time-wrap";
-    input.replaceWith(wrap);
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "now-btn";
-    btn.textContent = "Now";
-    btn.ariaLabel = `Set ${input.getAttribute("aria-label") || input.name} to now`;
-    btn.addEventListener("click", () => {
-      input.value = now();
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    });
-    wrap.append(input, btn);
-  }
 }
 
 // ---- Signature pads ------------------------------------------------------
@@ -373,7 +349,6 @@ function wire() {
   for (const el of form.querySelectorAll("[data-checks]")) {
     el.addEventListener("input", () => { if (el.value.trim()) field(el.dataset.checks).checked = true; });
   }
-  addNowButtons();
   setUpSignaturePads();
   field("Journal").addEventListener("input", updateJournalHint);
 
